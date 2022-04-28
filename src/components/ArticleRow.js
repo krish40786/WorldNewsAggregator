@@ -1,13 +1,11 @@
 import React from 'react'
+import "./../css/ArticleRow.css"
 
 const ArticlesRow = (props) => {
     return (
-        <div>
-            <span>props.title</span>
-            <span>props.link</span>
-            <span>props.description</span>
-            <span>props.source_url</span>
-        </div>
+        <a href={props.link} className='component-article-row'>
+            <div className='title'>{props.title}</div>
+        </a>
     )
 }
 
