@@ -1,0 +1,12 @@
+.component-search-bar {
+    width: 5000px;
+    height: 100px;
+}
+
+.component-filter-country {
+    width: 500px;
+}
+
+.component-filter-language {
+    width: 500px;
+}
