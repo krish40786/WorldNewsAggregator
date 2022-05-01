@@ -3,16 +3,22 @@ import React from 'react'
 import ArticleRow from './ArticleRow'
 
 const Articles = (props) => {
+    /* Noisy Console.log statements
     for (const item of props.items) {
-    //     console.log("Title:", item.getElementsByTagName("title")[0].innerHTML);
-    //     console.log("Link:", item.getElementsByTagName("link")[0].innerHTML);
-    //     console.log("Description:", item.getElementsByTagName("description")[0].innerHTML);
-    // console.log("Source URL:", item.getElementsByTagName("source")[0].getAttribute("url"));
-    //     console.log("Source: ", props.items[0].getElementsByTagName("source")[0].innerHTML); 
-    }
+        console.log("Title:", item.getElementsByTagName("title")[0].innerHTML);
+        console.log("Link:", item.getElementsByTagName("link")[0].innerHTML);
+        console.log("Description:", item.getElementsByTagName("description")[0].innerHTML);
+        console.log("Source URL:", item.getElementsByTagName("source")[0].getAttribute("url"));
+        console.log("Source: ", props.items[0].getElementsByTagName("source")[0].innerHTML); 
+    } */
 
+    let articlesDisplayed = 0;  // Limit the number of articles displayed based on props.numArticlesPreferred
     const rows = []
     for (const item of props.items) {
+        if (articlesDisplayed >= props.numArticlesPreferred) {
+            break;
+        }
+        articlesDisplayed += 1;
         rows.push(
         <ArticleRow
             key = {rows.length}
@@ -24,6 +30,9 @@ const Articles = (props) => {
         />
         );
     }
+
+    console.log("Total number of items:", props.items.length);
+    console.log("Number of items displayed:", articlesDisplayed);
 
     return(
         <div className='component-articles'>
