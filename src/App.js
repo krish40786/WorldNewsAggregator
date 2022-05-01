@@ -6,35 +6,41 @@ import FilterCountry from './components/FilterCountry'
 import FilterLanguage from './components/FilterLanguage'
 import SearchButton from './components/SearchButton'
 import Articles from './components/Articles'
+import NumArticlesPreference from './components/NumArticlesPreference'
 import "./css/App.css"
 
 const App = (props) => {
   const [keyword, setKeyword] = useState('Ukraine war');
   const [country, setCountry] = useState('CA');
   const [language, setLanguage] = useState('en');
-  //const [numSearches, setNumSearches] = useState(0);
   const [items, setItems] = useState();
+  const [numArticlesPreferred, setNumArticlesPreferred] = useState(25);
 
   var RSS_URL = `http://localhost:8010/proxy/rss/search?q=`;
   var RSS_Top_Stories_URL = 'http://localhost:8010/proxy/rss';
+ 
+  var current_article_index = 0;  // Variable used to track which articles to display on the current page
 
-  // If no searches were made, display the headlines
-  if (!items) {
+  // Top Stories Search functions
+  const topStoriesSearch = (event) => {
     fetch(RSS_Top_Stories_URL, {mode: 'cors'})  // axios might be better than fetch
     .then(response => response.text())
     .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
     .then(data => {
       console.log(data);
-      //items = data.getElementsByTagName("item");
       setItems(data.getElementsByTagName("item"));
-      //console.log(items[0]);
     })
     .catch((error) => {
       console.error('Error:', error);
     });
   }
- 
 
+  // If no searches were made, display the headlines
+  if (!items) {
+    topStoriesSearch();
+  }
+
+  // Search function based on country and language
   const search = (event) => {
     event.preventDefault();
     console.log('button clicked', event.target);
@@ -45,8 +51,6 @@ const App = (props) => {
     .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
     .then(data => {
       console.log(data);
-      //items = data.getElementsByTagName("item");
-      //setNumSearches(numSearches + 1);
       setItems(data.getElementsByTagName("item"))
       console.log(items[0]);
       
@@ -56,8 +60,8 @@ const App = (props) => {
     });
   }
 
+  // State change handlers
   const handleKeywordChange = (event) => {
-    //console.log(event.target.value);
     setKeyword(event.target.value);
   }
 
@@ -71,7 +75,13 @@ const App = (props) => {
     setLanguage(event.value);
   }
 
-  if (!items) { // Temporary. Once Top Stories is set up, this return statement can be removed.
+  const handleNumArticlesPreferenceChange = (event) => {
+    console.log("Number of Articles Displayed Selected:", event.label);
+    setNumArticlesPreferred(event.value);
+  }
+
+  // This is an extra return statement for the case where items is empty, in which case don't call the Articles module
+  if (!items) {
     console.log("Items is empty");
     return (
       <div>
@@ -85,6 +95,7 @@ const App = (props) => {
   }
 
   console.log("Items is not empty");
+  
   
   return (
     <div>
@@ -100,9 +111,9 @@ const App = (props) => {
           <FilterLanguage  onChange={handleLanguageChange}/>
         </span>
       </div>
-      
       <SearchButton onClick={search} type="button" />
-      <Articles items={items} />
+      <NumArticlesPreference onChange={handleNumArticlesPreferenceChange}/>
+      <Articles items={items} numArticlesPreferred={numArticlesPreferred}/>
     </div>
   )
 
