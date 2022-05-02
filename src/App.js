@@ -7,6 +7,7 @@ import FilterLanguage from './components/FilterLanguage'
 import SearchButton from './components/SearchButton'
 import Articles from './components/Articles'
 import NumArticlesPreference from './components/NumArticlesPreference'
+import Paging from './components/Paging'
 import "./css/App.css"
 
 const App = (props) => {
@@ -14,12 +15,14 @@ const App = (props) => {
   const [country, setCountry] = useState('CA');
   const [language, setLanguage] = useState('en');
   const [items, setItems] = useState();
-  const [numArticlesPreferred, setNumArticlesPreferred] = useState(25);
+  const [numArticlesPreferred, setNumArticlesPreferred] = useState(10);
+  // const [page, setPage] = useState(1);
+  const [currentArticleIndex, setCurrentArticleIndex] = useState(0);  // State used to track which articles to display on the current page
 
   var RSS_URL = `http://localhost:8010/proxy/rss/search?q=`;
   var RSS_Top_Stories_URL = 'http://localhost:8010/proxy/rss';
  
-  var current_article_index = 0;  // Variable used to track which articles to display on the current page
+  //var currentArticleIndex = 0;  
 
   // Top Stories Search functions
   const topStoriesSearch = (event) => {
@@ -78,6 +81,12 @@ const App = (props) => {
   const handleNumArticlesPreferenceChange = (event) => {
     console.log("Number of Articles Displayed Selected:", event.label);
     setNumArticlesPreferred(event.value);
+    setCurrentArticleIndex(0);  // Let the page go back to display the first articles
+  }
+
+  const handlePageChange = (event) => {
+    console.log("Page Selected:", event.target.id);
+    setCurrentArticleIndex(event.target.id * numArticlesPreferred);
   }
 
   // This is an extra return statement for the case where items is empty, in which case don't call the Articles module
@@ -94,7 +103,7 @@ const App = (props) => {
     )
   }
 
-  console.log("Items is not empty");
+  //console.log("Items is not empty");
   
   
   return (
@@ -112,8 +121,9 @@ const App = (props) => {
         </span>
       </div>
       <SearchButton onClick={search} type="button" />
-      <NumArticlesPreference onChange={handleNumArticlesPreferenceChange}/>
-      <Articles items={items} numArticlesPreferred={numArticlesPreferred}/>
+      <NumArticlesPreference onChange={handleNumArticlesPreferenceChange} value={numArticlesPreferred}/>
+      <Articles items={items} numArticlesPreferred={numArticlesPreferred} currentArticleIndex={currentArticleIndex}/>
+      <Paging totalNumItems={items.length} numArticlesPreferred={numArticlesPreferred} onClick={handlePageChange}/>
     </div>
   )
 

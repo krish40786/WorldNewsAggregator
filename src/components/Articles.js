@@ -13,10 +13,14 @@ const Articles = (props) => {
     } */
 
     let articlesDisplayed = 0;  // Limit the number of articles displayed based on props.numArticlesPreferred
+    let articlesToCurrArtIndex = props.currentArticleIndex;
     const rows = []
     for (const item of props.items) {
         if (articlesDisplayed >= props.numArticlesPreferred) {
             break;
+        } else if (articlesToCurrArtIndex > 0) {
+            articlesToCurrArtIndex -= 1;
+            continue;
         }
         articlesDisplayed += 1;
         rows.push(
